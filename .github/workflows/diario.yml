@@ -33,4 +33,4 @@ jobs:
           echo "TELEGRAM_CHAT_IDS=${{ secrets.TELEGRAM_CHAT_IDS }}" >> .env
 
       - name: Correr orquestador
-        run: python run_diario.py --total 4
+        run: python run_diario.py --total 4 --min-descuento 1
