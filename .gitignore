@@ -1,0 +1,6 @@
+entrenosotrasenv/
+__pycache__/
+*.pyc
+token_telegram.txt
+.env
+.DS_Store

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"home: %{http_code} \\(%{time_total}s\\)\\\\n\" -A \"Mozilla/5.0\" --max-time 20 \"https://www.mercadolibre.cl/\")",
+      "Bash(curl -s -o /dev/null -w \"prod: %{http_code} -> %{redirect_url}\\\\n\" -A \"Mozilla/5.0\" --max-time 20 \"https://www.mercadolibre.cl/p/MLC59184246\")",
+      "Bash(entrenosotrasenv/bin/python scrape_ml.py \"https://www.mercadolibre.cl/p/MLC59184246\" --pretty)"
+    ]
+  }
+}
