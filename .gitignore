@@ -4,3 +4,7 @@ __pycache__/
 token_telegram.txt
 .env
 .DS_Store
+ofertas/
+placa_prueba.png
+placa_nyx.png
+placa_nyx_caption.txt

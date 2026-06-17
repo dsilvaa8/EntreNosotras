@@ -28,17 +28,9 @@ BADGE    = (34, 170, 110)    # verde descuento
 
 W, H = 1080, 1350            # formato vertical ideal para WhatsApp
 
-# Directorio de fuentes del proyecto (relativo a este script).
-_FONTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
-
-# Fuentes de marca (descargadas en fonts/).
-# Playfair Display es una variable font (un solo .ttf cubre Regular y Bold).
-# Great Vibes solo existe en Regular (es una cursiva script).
-_PLAYFAIR = os.path.join(_FONTS_DIR, "PlayfairDisplay.ttf")
-_GREATVIBES = os.path.join(_FONTS_DIR, "GreatVibes-Regular.ttf")
-
-# Fallbacks para sistemas sin las fuentes de marca.
-_FALLBACK = {
+# Buscamos fuentes en varias ubicaciones segun el sistema. En Linux suele
+# estar DejaVu; en macOS usamos Arial (en /System/Library/Fonts/Supplemental).
+_FONT_CANDIDATES = {
     False: [
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
         "/System/Library/Fonts/Supplemental/Arial.ttf",
@@ -52,20 +44,10 @@ _FALLBACK = {
 }
 
 def font(size, bold=False):
-    """Fuente principal: Playfair Display (serif de marca)."""
-    if os.path.exists(_PLAYFAIR):
-        return ImageFont.truetype(_PLAYFAIR, size)
-    for path in _FALLBACK[bold]:
+    for path in _FONT_CANDIDATES[bold]:
         if os.path.exists(path):
             return ImageFont.truetype(path, size)
     return ImageFont.load_default()
-
-def font_script(size):
-    """Great Vibes: usada para el precio destacado (acento femenino)."""
-    if os.path.exists(_GREATVIBES):
-        return ImageFont.truetype(_GREATVIBES, size)
-    # Fallback: Playfair o Arial
-    return font(size, bold=False)
 
 def clp(n):
     return "$" + f"{int(n):,}".replace(",", ".")
@@ -197,14 +179,14 @@ def build(titulo, precio, antes, imagen, link, salida, logo="", descuento=None):
         d.text((bx1 + (bw-(tb[2]-tb[0]))/2, by1 + (bh-(tb[3]-tb[1]))/2 - tb[1]),
                t, font=font(34, True), fill=(255,255,255))
 
-    # Titulo (envuelto, centrado) — Playfair Display
+    # Titulo (envuelto, centrado)
     y = titulo_top
     for line in lineas:
-        draw_centered(d, line, font(36, True), y, ACCENT2)
-        y += 50
+        draw_centered(d, line, font(38, True), y, ACCENT2)
+        y += 52
 
-    # Precio — Great Vibes (cursiva script de marca)
-    draw_centered(d, clp(precio), font_script(96), precio_y, ACCENT)
+    # Precio
+    draw_centered(d, clp(precio), font(80, True), precio_y, ACCENT)
     if hay_descuento:
         t = "antes " + clp(antes)
         fnt = font(34)
