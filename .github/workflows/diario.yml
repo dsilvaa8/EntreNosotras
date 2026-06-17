@@ -1,0 +1,36 @@
+name: Entre Nosotras - Ofertas Diarias
+
+on:
+  schedule:
+    - cron: '0 13 * * *'  # 9:00 AM Santiago (invierno UTC-4)
+    - cron: '0 21 * * *'  # 5:00 PM Santiago (invierno UTC-4)
+  workflow_dispatch:       # permite correr manualmente desde GitHub
+
+jobs:
+  generar-ofertas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias Python
+        run: pip install playwright pillow
+
+      - name: Instalar Chromium con dependencias del sistema
+        run: python -m playwright install --with-deps chromium
+
+      - name: Crear .env con credenciales de Telegram
+        run: |
+          echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}" > .env
+          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
+          echo "TELEGRAM_CHAT_IDS=${{ secrets.TELEGRAM_CHAT_IDS }}" >> .env
+
+      - name: Correr orquestador
+        run: python run_diario.py --total 4
